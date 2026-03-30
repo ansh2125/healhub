@@ -23,8 +23,9 @@ const app = express();
 // Middleware
 app.use(cors({
     origin: [
-        "http://localhost:3000",                // ✅ tera local frontend
-        "https://your-app.vercel.app"           // (baad me add karna)
+        "http://localhost:5173",
+        "http://localhost:3000",   // ✅ ADD THIS
+        "https://your-app.vercel.app"
     ],
     credentials: true
 }));
