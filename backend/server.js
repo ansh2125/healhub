@@ -27,7 +27,7 @@ const corsOptions = {
     origin: [
         "http://localhost:5173",
         "http://localhost:3000",
-        "https://your-app.vercel.app" // later replace with real
+        "https://healhub-two.vercel.app/" // later replace with real
     ],
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
     allowedHeaders: ["Content-Type", "Authorization"],
