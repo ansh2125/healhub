@@ -20,15 +20,29 @@ connectDB();
 
 const app = express();
 
-// Middleware
-app.use(cors({
+// ===============================
+// ✅ CORS CONFIG (FINAL FIX)
+// ===============================
+const corsOptions = {
     origin: [
         "http://localhost:5173",
-        "http://localhost:3000",   // ✅ ADD THIS
-        "https://your-app.vercel.app"
+        "http://localhost:3000",
+        "https://your-app.vercel.app" // later replace with real
     ],
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
+    allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true
-}));
+};
+
+// 🔥 Apply CORS
+app.use(cors(corsOptions));
+
+// 🔥 VERY IMPORTANT (fix preflight error)
+app.options("*", cors(corsOptions));
+
+// ===============================
+// Middleware
+// ===============================
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -36,7 +50,9 @@ if (process.env.NODE_ENV === 'development') {
     app.use(morgan('dev'));
 }
 
+// ===============================
 // API Routes
+// ===============================
 app.use('/api/auth', authRoutes);
 app.use('/api/doctors', doctorRoutes);
 app.use('/api/appointments', appointmentRoutes);
@@ -44,7 +60,9 @@ app.use('/api/admin', adminRoutes);
 app.use('/api/analytics', analyticsRoutes);
 app.use('/api/reviews', reviewRoutes);
 
+// ===============================
 // Health check
+// ===============================
 app.get('/api/health', (req, res) => {
     res.json({
         status: 'OK',
@@ -53,10 +71,15 @@ app.get('/api/health', (req, res) => {
     });
 });
 
+// ===============================
 // Error handling
+// ===============================
 app.use(notFound);
 app.use(errorHandler);
 
+// ===============================
+// Server start
+// ===============================
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
