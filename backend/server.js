@@ -25,21 +25,17 @@ const app = express();
 // ===============================
 const corsOptions = {
     origin: [
-        "http://localhost:5173",
         "http://localhost:3000",
-        "https://healhub-two.vercel.app/" // later replace with real
+        "http://localhost:5173",
+        "https://healhub-two.vercel.app" // ✅ tera real frontend
     ],
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true
 };
 
-// 🔥 Apply CORS
 app.use(cors(corsOptions));
-
-// 🔥 VERY IMPORTANT (fix preflight error)
 app.options("*", cors(corsOptions));
-
 // ===============================
 // Middleware
 // ===============================
