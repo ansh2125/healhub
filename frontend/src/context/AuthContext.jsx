@@ -7,118 +7,124 @@ export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-        checkAuth();
-    }, []);
+    ```
+useEffect(() => {
+    checkAuth();
+}, []);
 
-    // 🔍 Check auth on load
-    const checkAuth = async () => {
-        const token = localStorage.getItem("token");
+// 🔍 Check auth on load
+const checkAuth = async () => {
+    const token = localStorage.getItem("token");
 
-        if (token) {
-            try {
-                const response = await api.get("/auth/me");
-                setUser(response.data.data);
-            } catch (error) {
-                localStorage.removeItem("token");
-                setUser(null);
-            }
-        }
-
-        setLoading(false);
-    };
-
-    // 🔐 LOGIN
-    const login = async (email, password) => {
+    if (token) {
         try {
-            const response = await api.post("/auth/login", {
-                email,
-                password,
-            });
-
-            const { token, ...userData } = response.data.data;
-
-            localStorage.setItem("token", token);
-            setUser(userData);
-
-            return userData;
+            const response = await api.get("/auth/me");
+            setUser(response.data.data);
         } catch (error) {
-            throw error;
+            localStorage.removeItem("token");
+            setUser(null);
         }
-    };
+    }
 
-    // 📝 REGISTER PATIENT
-    const register = async (userData) => {
-        try {
-            const response = await api.post("/auth/register", userData);
+    setLoading(false);
+};
 
-            const { token, ...user } = response.data.data;
+// 🔐 LOGIN
+const login = async (email, password) => {
+    try {
+        const response = await api.post("/auth/login", {
+            email,
+            password,
+        });
 
-            localStorage.setItem("token", token);
-            setUser(user);
+        const { token, ...userData } = response.data.data;
 
-            return user;
-        } catch (error) {
-            throw error;
-        }
-    };
+        localStorage.setItem("token", token);
+        setUser(userData);
 
-    // 🩺 REGISTER DOCTOR
-    const registerDoctor = async (doctorData) => {
-        try {
-            const response = await api.post(
-                "/auth/register/doctor",
-                doctorData
-            );
+        return userData;
+    } catch (error) {
+        throw error;
+    }
+};
 
-            const { token, ...doctor } = response.data.data;
+// 📝 REGISTER PATIENT
+const register = async (userData) => {
+    try {
+        const response = await api.post("/auth/register", userData);
 
-            localStorage.setItem("token", token);
-            setUser(doctor);
+        const { token, ...user } = response.data.data;
 
-            return doctor;
-        } catch (error) {
-            throw error;
-        }
-    };
+        localStorage.setItem("token", token);
+        setUser(user);
 
-    // 🚪 LOGOUT
-    const logout = () => {
-        localStorage.removeItem("token");
-        setUser(null);
-        window.location.replace("/login");
-    };
+        return user;
+    } catch (error) {
+        throw error;
+    }
+};
 
-    // 🔄 Update user
-    const updateUser = (userData) => {
-        setUser((prev) => ({ ...prev, ...userData }));
-    };
+// 🩺 REGISTER DOCTOR
+const registerDoctor = async (doctorData) => {
+    try {
+        const response = await api.post(
+            "/auth/register/doctor",
+            doctorData
+        );
 
-    return (
-        <AuthContext.Provider
-            value={{
-                user,
-                loading,
-                login,
-                register,
-                registerDoctor,
-                logout,
-                updateUser,
-                isAuthenticated: !!user,
-            }}
-        >
-            {children}
-        </AuthContext.Provider>
-    );
+        const { token, ...doctor } = response.data.data;
+
+        localStorage.setItem("token", token);
+        setUser(doctor);
+
+        return doctor;
+    } catch (error) {
+        throw error;
+    }
+};
+
+// 🚪 LOGOUT (✅ FIXED)
+const logout = () => {
+    localStorage.removeItem("token");
+    setUser(null);
+    // ❌ NO window.location here
+};
+
+// 🔄 Update user
+const updateUser = (userData) => {
+    setUser((prev) => ({ ...prev, ...userData }));
+};
+
+return (
+    <AuthContext.Provider
+        value={{
+            user,
+            loading,
+            login,
+            register,
+            registerDoctor,
+            logout,
+            updateUser,
+            isAuthenticated: !!user,
+        }}
+    >
+        {children}
+    </AuthContext.Provider>
+);
+```
+
 };
 
 // 🔌 Hook
 export const useAuth = () => {
     const context = useContext(AuthContext);
 
-    if (!context) {
-        throw new Error("useAuth must be used within AuthProvider");
-    }
+    ```
+if (!context) {
+    throw new Error("useAuth must be used within AuthProvider");
+}
 
-    return context;
+return context;
+```
+
 };
